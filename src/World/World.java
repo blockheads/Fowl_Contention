@@ -1,6 +1,9 @@
 package World;
 
-import java.util.ArrayList;
+import World.helpers.Coordinate;
+import World.helpers.MathHelper;
+import World.helpers.SimplexNoise;
+
 import java.util.Random;
 
 public class World {
@@ -9,13 +12,14 @@ public class World {
     private final int sizeBoundSeed = 20;
     private int size;
     private Random random;
-    private ArrayList<ArrayList<Tile>> tiles;
+    private Tile[][] tiles;
 
 
     //late of course can pass parameters
     public World() {
         random = new Random();
-        tiles = new ArrayList<ArrayList<Tile>>();
+        //ehhhhhhhhhh
+        size = sizeBase + random.nextInt(sizeBoundSeed) -  random.nextInt(sizeBoundSeed);
         generate();
     }
 
@@ -28,40 +32,52 @@ public class World {
         //generating the weighted list
         WorldStatistics worldStatistics = new WorldStatistics();
 
-        //the bounding box for this world
-        for (int i = 0; i < size; i++) {
+        //constructing simplex noise
+        SimplexNoise simplexNoise = new SimplexNoise(200,0.2,142);
 
-            //initializing this row in the arraylist
-            tiles.add(new ArrayList<Tile>());
+        tiles = new Tile[size][size];
 
-            for (int j = 0; j < size; j++) {
+        double[][] simplexArray = new double[size][size];
 
+        double xStart=0;
+        double XEnd=size;
+        double yStart=0;
+        double yEnd=size;
 
-                //checking to up down left right
-                if (i > 0) {
-                    Tile up = tiles.get(i - 1).get(j);
-                    worldStatistics.add(up.getBiome(), true);
-
-                }
-                if (j > 0) {
-                    Tile left = tiles.get(i).get(j - 1);
-                    worldStatistics.add(left.getBiome(), true);
-                }
-                if( i > 0 && j > 0){
-                    Tile upleft = tiles.get(i-1).get(j - 1);
-                    worldStatistics.add(upleft.getBiome(), true);
-                }
-
-                Tile newTile = new Tile(worldStatistics.next());
-
-                // maybe check for a reset or set a flag from within...
-                tiles.get(i).add(newTile);
-
-                //now removing the added biomes
-               worldStatistics.reset();
+        for(int i = 0; i < size; i++){
+            for(int j=0; j < size; j++){
+                int x=(int)(xStart+i*((XEnd-xStart)/size));
+                int y=(int)(yStart+j*((yEnd-yStart)/size));
+                //basically this pulls out a biome based on a noise like pattern
+                double simplexDouble = ((simplexNoise.getNoise(x,y)));
+                Biome biome =  worldStatistics.next(simplexDouble);
+                tiles[i][j] = new Tile(biome);
 
             }
         }
+
+//        for(int i = 0; i < numBiomes; i++) {
+//            Coordinate startCoord = new Coordinate(random.nextInt(size),random.nextInt(size));
+//            Biome currBiome = worldStatistics.next();
+//            //getting number of tiles to generate
+//            int numTiles = random.nextInt(currBiome.getMaxSize() - currBiome.getMinSize());
+//
+//            //need to ensure don't go out of bounds
+//            for(int j = 0; j < numTiles; j++){
+//                //idk wtf I'm doing lul
+//                int x=(int)(startCoord.getX()+i*((XEnd-xStart)/size));
+//                int y=(int)(startCoord.getY()+j*((yEnd-yStart)/size));
+//                int xcord = (int) (simplexNoise.getNoise(x,y)*size) + startCoord.getX();
+//                int ycord = (int) (simplexNoise.getNoise(x,y)*size) + startCoord.getY();
+//
+//                System.out.println(xcord);
+//                System.out.println(ycord);
+//                xcord = MathHelper.ensureRange(xcord,0,size-1);
+//                ycord = MathHelper.ensureRange(ycord,0,size-1);
+//                tiles[xcord][ycord] = new Tile(currBiome);
+//            }
+//        }
+
     }
 
     public void display(){
@@ -69,10 +85,17 @@ public class World {
         for (int i = 0; i < size; i++) {
             System.out.println();
             for (int j = 0; j < size; j++) {
-                System.out.print(tiles.get(i).get(j).getBiome().getVisualRepresentation());
+                if(tiles[i][j] == null){
+                    System.out.print("X");
+                }
+                else {
+                    System.out.print(tiles[i][j].getBiome().getVisualRepresentation());
+                }
             }
         }
     }
 }
+
+
 
 
