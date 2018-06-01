@@ -33,7 +33,7 @@ public class World {
         WorldStatistics worldStatistics = new WorldStatistics();
 
         //constructing simplex noise
-        SimplexNoise simplexNoise = new SimplexNoise(200,0.2,142);
+        SimplexNoise simplexNoise = new SimplexNoise(200,0.6,342);
 
         tiles = new Tile[size][size];
 
@@ -89,7 +89,7 @@ public class World {
                     System.out.print("X");
                 }
                 else {
-                    System.out.print(tiles[i][j].getBiome().getVisualRepresentation());
+                    System.out.print( tiles[i][j].getBiome().getColorString() +  tiles[i][j].getBiome().getVisualRepresentation());
                 }
             }
         }

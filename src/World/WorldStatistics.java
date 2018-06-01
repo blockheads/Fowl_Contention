@@ -72,7 +72,6 @@ public class WorldStatistics {
 
     public Biome next(double simplexDouble) {
 
-
         if(biomeRotationNum >= biomeRotationDelay){
             //storing previous biome for taper effect
             taperBiome = selectedBiome;
@@ -87,17 +86,21 @@ public class WorldStatistics {
             biomeRotationNum++;
         }
         //TODO: fix magic numbers, no idea wtf is going on rn lol time to spaghetti this shit up tho
-        double value = (simplexDouble +1) * .5 *  noiseTotal;
-        System.out.println(noiseTotal);
-        System.out.println(simplexDouble);
-        System.out.println(simplexDouble + 1);
-        System.out.println((simplexDouble +1) *.5);
-        System.out.println(value);
+        double value = (simplexDouble );
 
-        if( value > 0 ){
+        //higher value determines higher depth
+        if(value < .1 ){
+            return new Biome(Biome.BiomeType.DEEPWATER);
+        }
+        if( value < .2 ){
             return new Biome(Biome.BiomeType.WATER);
         }
-        else{
+        if( value < .28) {
+            return new Biome(Biome.BiomeType.BEACH);
+        }
+
+        else if(value < .35){
+
             if (biomeRotationNum < biomeTaper && taperBiome != null){
                 int rand = random.nextInt(3);
                 if( rand > 1){
@@ -107,6 +110,35 @@ public class WorldStatistics {
             }
             return selectedBiome;
         }
+        //example of making rarer terrarin "elevation can be = rarity in a sense too, of course
+        //place it in between other similar features at the proper elevation
+        else if( value < .4){
+            if(random.nextInt(2) == 1)
+                return new Biome(Biome.BiomeType.RARE);
+            else{
+                if (biomeRotationNum < biomeTaper && taperBiome != null){
+                    int rand = random.nextInt(3);
+                    if( rand > 1){
+                        return taperBiome;
+                    }
+
+                }
+                return selectedBiome;
+            }
+
+        }
+        else{
+
+            if (biomeRotationNum < biomeTaper && taperBiome != null){
+                int rand = random.nextInt(3);
+                if( rand > 1){
+                    return taperBiome;
+                }
+
+            }
+            return selectedBiome;
+        }
+
 
 
     }
