@@ -1,8 +1,12 @@
 package World;
 
+import java.util.Random;
+
 public class Biome {
 
+    enum HeightType{DEEPWATER, WATER ,BEACH, LOWELEVATION, MEDIUMELEVATION, HIGHELEVATION }
     enum BiomeType {WATER, DEEPWATER, BEACH, GRASSLAND, FOREST, DESERT, RARE }
+
 
     //probability for biomes
     protected final static int WaterProbWeight = 3;
@@ -37,9 +41,11 @@ public class Biome {
     protected final static char DefaultVisualRepresentation = '@';
     protected final static String DefaultColorString = "\u001b[37;1m";
     private BiomeType biomeType;
+    private HeightType heightType;
+    private Climate climate;
 
-    public Biome(BiomeType biomeType) {
-        this.biomeType = biomeType;
+    public Biome(HeightType heightType) {
+        this.heightType = heightType;
     }
 
     //gets the weight of this biome
@@ -137,6 +143,8 @@ public class Biome {
         }
     }
 
+
+
     /**
      * Marks off generatable biomes, water is a nono
      * @return
@@ -147,5 +155,13 @@ public class Biome {
             return false;
         else
             return true;
+    }
+
+    public HeightType getHeightType() {
+        return heightType;
+    }
+
+    public void setClimate(Climate climate){
+        this.climate = climate;
     }
 }

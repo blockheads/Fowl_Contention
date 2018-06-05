@@ -44,6 +44,7 @@ public class World {
         double yStart=0;
         double yEnd=size;
 
+        //constructs 2d array filled with heightmap biomes
         for(int i = 0; i < size; i++){
             for(int j=0; j < size; j++){
                 int x=(int)(xStart+i*((XEnd-xStart)/size));
@@ -56,27 +57,16 @@ public class World {
             }
         }
 
-//        for(int i = 0; i < numBiomes; i++) {
-//            Coordinate startCoord = new Coordinate(random.nextInt(size),random.nextInt(size));
-//            Biome currBiome = worldStatistics.next();
-//            //getting number of tiles to generate
-//            int numTiles = random.nextInt(currBiome.getMaxSize() - currBiome.getMinSize());
-//
-//            //need to ensure don't go out of bounds
-//            for(int j = 0; j < numTiles; j++){
-//                //idk wtf I'm doing lul
-//                int x=(int)(startCoord.getX()+i*((XEnd-xStart)/size));
-//                int y=(int)(startCoord.getY()+j*((yEnd-yStart)/size));
-//                int xcord = (int) (simplexNoise.getNoise(x,y)*size) + startCoord.getX();
-//                int ycord = (int) (simplexNoise.getNoise(x,y)*size) + startCoord.getY();
-//
-//                System.out.println(xcord);
-//                System.out.println(ycord);
-//                xcord = MathHelper.ensureRange(xcord,0,size-1);
-//                ycord = MathHelper.ensureRange(ycord,0,size-1);
-//                tiles[xcord][ycord] = new Tile(currBiome);
-//            }
-//        }
+        int numClimates = 10;
+        for(int i = 0; i < numClimates; numClimates++) {
+            //now going through and selecting random points to generate the climates
+            Coordinate rand = new Coordinate(random.nextInt(size), random.nextInt(size));
+            //grabbing the tile at that point
+            Tile selected = tiles[rand.getX()][rand.getY()];
+            //select random climate
+            Climate.generateClimate();
+
+        }
 
     }
 
